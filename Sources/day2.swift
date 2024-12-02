@@ -3,16 +3,18 @@ class Day2: Day {
     var input: String? = nil
 
     func run() {
-        let sets = getSets()!
+        let sets = getSets()
         var safeSets = 0
         var potentiallySafe = 0
         for set in sets {
+            if (set.count == 1) {break}
+            let unwrapped = set.compactMap{$0}
             // Part 1
-            if (isSafe(set)) {
+            if (isSafe(unwrapped)) {
                 safeSets += 1
                 // Part 2
                 potentiallySafe += 1
-            } else if (tryMutations(set)) {
+            } else if (tryMutations(unwrapped)) {
                 potentiallySafe += 1
             }
         }
@@ -57,9 +59,9 @@ class Day2: Day {
         return true
     }
 
-    func getSets() -> [[Int]]? {
+    func getSets() -> [[Int?]] {
         // Converts the input from 1 2 3 4 5\n5 4 3 2 1 to [[1,2,3,4,5],[5,4,3,2,1]]
-        let nums = self.input!.components(separatedBy: fileSeperator).map{$0.components(separatedBy: " ").map{Int($0)!}}
+        let nums = self.input!.components(separatedBy: fileSeperator).map{$0.components(separatedBy: " ").map{Int($0)}}
         return nums
     }
 }
