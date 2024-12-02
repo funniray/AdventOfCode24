@@ -61,7 +61,7 @@ class Day2: Day {
 
     func getSets() -> [[Int?]] {
         // Converts the input from 1 2 3 4 5\n5 4 3 2 1 to [[1,2,3,4,5],[5,4,3,2,1]]
-        let nums = self.input!.components(separatedBy: fileSeperator).map{$0.components(separatedBy: " ").map{Int($0)}}
+        let nums = self.input!.fastSplit(separatedBy: fileSeperator).map{$0.fastSplit(separatedBy: " ").map{Int($0)}}
         return nums
     }
 }

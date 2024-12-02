@@ -6,6 +6,18 @@ let fileSeperator = "\r\n"
 let fileSeperator = "\n"
 #endif
 
+extension String {
+    #if os(Windows)
+    func fastSplit(separatedBy: String) -> [String] {
+        return self.split(separator: separatedBy).map{String($0)}
+    }
+    #else
+    func fastSplit<T>(separatedBy separator: T) -> [String] where T : StringProtocol {
+        return self.components(separatedBy: separator)
+    }
+    #endif
+}
+
 protocol Day {
     var inputFile: String { get }
     var input: String? { set get }
