@@ -1,5 +1,11 @@
 import Foundation
 
+#if os(Windows)
+let fileSeperator = "\r\n"
+#else
+let fileSeperator = "\n"
+#endif
+
 protocol Day {
     var inputFile: String { get }
     var input: String? { set get }

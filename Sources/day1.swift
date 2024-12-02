@@ -33,12 +33,13 @@ class Day1: Day {
 
     func getSets() -> [[Int]] {
         // Transform text from 1   2\n1   2 to [[1,2],[1,2]]
-        let nums = self.input!.split(whereSeparator: \.isNewline).map{$0.split(separator: "   ").map{Int($0)!}}
+        let nums = self.input!.components(separatedBy: fileSeperator).map{$0.components(separatedBy: "   ").map{Int($0)}}
         // Transforms text from [[1,2],[1,2]] to [[1,1],[2,2]]
         var sets: [[Int]] = [[],[]]
         for numSet in nums {
-            sets[0].append(numSet[0])
-            sets[1].append(numSet[1])
+            if (numSet[0] == nil) {break}
+            sets[0].append(numSet[0]!)
+            sets[1].append(numSet[1]!)
         }
 
         sets[0].sort()
