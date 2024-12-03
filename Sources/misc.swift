@@ -7,15 +7,15 @@ let fileSeperator = "\n"
 #endif
 
 extension String {
-    #if os(Windows)
-    func fastSplit(separatedBy: String) -> [String] {
-        return self.split(separator: separatedBy).map{String($0)}
-    }
-    #else
-    func fastSplit<T>(separatedBy separator: T) -> [String] where T : StringProtocol {
+    // String.components is really slow on windows for some reason
+    // because of this, we use the "slower" string.split on windows
+    func fastSplit(separatedBy separator: String) -> [String] {
+        #if os(Windows)
+        return self.split(separator: separator).map{String($0)}
+        #else
         return self.components(separatedBy: separator)
+        #endif
     }
-    #endif
 }
 
 protocol Day {
