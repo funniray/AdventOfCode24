@@ -1,6 +1,8 @@
+import Foundation
+
 class Day1: Day {
     let inputFile = "./Inputs/day1.txt"
-    var input: String? = nil
+    var input: Data? = nil
 
     func run() {
         let sets = getSets()
@@ -33,13 +35,12 @@ class Day1: Day {
 
     func getSets() -> [[Int]] {
         // Transform text from 1   2\n1   2 to [[1,2],[1,2]]
-        let nums = self.input!.fastSplit(separatedBy: fileSeperator).map{$0.fastSplit(separatedBy: "   ").map{Int($0)}}
+        let nums = self.input!.read2DArray()
         // Transforms text from [[1,2],[1,2]] to [[1,1],[2,2]]
         var sets: [[Int]] = [[],[]]
         for numSet in nums {
-            if (numSet[0] == nil) {break}
-            sets[0].append(numSet[0]!)
-            sets[1].append(numSet[1]!)
+            sets[0].append(numSet[0])
+            sets[1].append(numSet[1])
         }
 
         sets[0].sort()

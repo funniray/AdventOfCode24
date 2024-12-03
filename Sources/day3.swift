@@ -2,7 +2,7 @@ import Foundation
 
 class Day3: Day {
     let inputFile = "./Inputs/day3.txt"
-    var input: String? = nil
+    var input: Data? = nil
 
     func run() {
         let matches = getMatches()
@@ -17,6 +17,7 @@ class Day3: Day {
     }
 
     func getMatches() -> [[[Int]]] {
+        let inputStr = String(decoding: self.input!, as: UTF8.self)
         let capturePattern = #"don't\(\)|do\(\)|mul\((\d+),(\d+)\)"#
         let captureRegex = try! NSRegularExpression(
             pattern: capturePattern,
@@ -24,11 +25,11 @@ class Day3: Day {
         )
 
         let nameRange = NSRange(
-            self.input!.startIndex..<self.input!.endIndex,
-            in: self.input!
+            inputStr.startIndex..<inputStr.endIndex,
+            in: inputStr
         )
 
-        let matches: [NSTextCheckingResult] = captureRegex.matches(in: self.input!, options: [], range: nameRange)
+        let matches: [NSTextCheckingResult] = captureRegex.matches(in: inputStr, options: [], range: nameRange)
 
         var output: [[Int]] = []
         var outputGated: [[Int]] = []
@@ -37,8 +38,8 @@ class Day3: Day {
             var numbers: [Int] = []
             for rangeIndex in 0..<match.numberOfRanges {
                 let matchRange = match.range(at: rangeIndex)
-                if let substringRange = Range(matchRange, in: self.input!) {
-                    let capture = String(self.input![substringRange])
+                if let substringRange = Range(matchRange, in: inputStr) {
+                    let capture = String(inputStr[substringRange])
                     if (rangeIndex == 0) {
                         if (capture == "do()") {
                             enabled = true

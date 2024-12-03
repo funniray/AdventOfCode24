@@ -40,6 +40,7 @@ func main() -> Bool {
     }
     let readStartMs = Date().timeIntervalSince1970 * 1_000
     implementation!.readInput()
+    if implementation!.input == nil {return false}
     let startMs = Date().timeIntervalSince1970 * 1_000
     implementation!.run()
     let endMs = Date().timeIntervalSince1970 * 1_000

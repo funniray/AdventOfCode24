@@ -1,6 +1,8 @@
+import Foundation
+
 class Day2: Day {
     let inputFile = "./Inputs/day2.txt"
-    var input: String? = nil
+    var input: Data? = nil
 
     func run() {
         let sets = getSets()
@@ -8,13 +10,14 @@ class Day2: Day {
         var potentiallySafe = 0
         for set in sets {
             if (set.count == 1) {break}
-            let unwrapped = set.compactMap{$0}
+            // let unwrapped = set.compactMap{$0}
+            // print("\(unwrapped) \(isSafe(unwrapped))")
             // Part 1
-            if (isSafe(unwrapped)) {
+            if (isSafe(set)) {
                 safeSets += 1
                 // Part 2
                 potentiallySafe += 1
-            } else if (tryMutations(unwrapped)) {
+            } else if (tryMutations(set)) {
                 potentiallySafe += 1
             }
         }
@@ -59,9 +62,10 @@ class Day2: Day {
         return true
     }
 
-    func getSets() -> [[Int?]] {
+    func getSets() -> [[Int]] {
         // Converts the input from 1 2 3 4 5\n5 4 3 2 1 to [[1,2,3,4,5],[5,4,3,2,1]]
-        let nums = self.input!.fastSplit(separatedBy: fileSeperator).map{$0.fastSplit(separatedBy: " ").map{Int($0)}}
-        return nums
+        // let nums = self.input!.fastSplit(separatedBy: fileSeperator).map{$0.fastSplit(separatedBy: " ").map{Int($0)}}
+        // return self.input!.read2DArray()
+        return self.input!.read2DArray()
     }
 }

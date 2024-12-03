@@ -18,19 +18,55 @@ extension String {
     }
 }
 
+extension Data {
+    func read2DArray() -> [[Int]] {
+        var res: [[Int]] = []
+        var line: [Int] = []
+        var working: Int? = nil
+        for val in self {
+            let newline = val == 10 || val == 13 // \r or \n
+            let whitespace = newline || val == 32
+            let number = !whitespace && val >= 48 && val <= 57
+            let numberValue = number ? val-48 : nil
+            if whitespace && working != nil {
+                line.append(working!)
+                working = nil
+            }
+            if newline && line.count > 0 {
+                res.append(line)
+                line = []
+            } else if number {
+                if (working == nil) {
+                    working = Int(numberValue!)
+                } else {
+                    working = (working! * 10) + Int(numberValue!)
+                }
+            }
+        }
+        if working != nil {
+            line.append(working!)
+        }
+        if line.count > 0 {
+            res.append(line)
+        }
+        return res
+    }
+}
+
 protocol Day {
     var inputFile: String { get }
-    var input: String? { set get }
+    var input: Data? { set get }
     func run()
 }
 
 extension Day {
     mutating func readInput() {
-        do {
-            let content = try String(contentsOfFile: self.inputFile, encoding: .utf8)
-            self.input = content
-        } catch (let error) {
-            print("Unable to open input \(self.inputFile).\n\(error)")
+        let file = FileHandle(forReadingAtPath: self.inputFile)
+        if file == nil {
+            print("Unable to open input \(self.inputFile).")
+            return
         }
+
+        self.input = file!.readDataToEndOfFile()
     }
 }
