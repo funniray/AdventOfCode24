@@ -51,6 +51,25 @@ extension Data {
         }
         return res
     }
+
+    func read2DCharArray() -> [[Character]] {
+        var res: [[Character]] = []
+        var line: [Character] = []
+        for val in self {
+            let newline = val == 10 || val == 13 // \r or \n
+            if newline {
+                if line.count < 1 {continue}
+                res.append(line)
+                line = []
+            } else {
+                line.append(Character(Unicode.Scalar(val)))
+            }
+        }
+        if line.count > 0 {
+            res.append(line)
+        }
+        return res
+    }
 }
 
 protocol Day {
