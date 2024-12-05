@@ -119,7 +119,7 @@ class Day4: Day {
 }
 
 struct Point {
-    var x:Int = 0, y: Int = 0
+    var x: Int = 0, y: Int = 0
 
     init(_ x: Int, _ y: Int) {
         self.x = x

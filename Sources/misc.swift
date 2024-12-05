@@ -25,7 +25,7 @@ extension Data {
         var working: Int? = nil
         for val in self {
             let newline = val == 10 || val == 13 // \r or \n
-            let whitespace = newline || val == 32
+            let whitespace = newline || val == 32 || val == 44 || val == 124 // We include | and , as whitespace
             let number = !whitespace && val >= 48 && val <= 57
             let numberValue = number ? val-48 : nil
             if whitespace && working != nil {
