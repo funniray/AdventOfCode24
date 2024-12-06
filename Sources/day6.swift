@@ -21,7 +21,7 @@ class Day6: Day {
         let pos = dat.0
         let max = Point(map[0].count-1, map.count-1)
 
-        let p1 = await Day6.simulate(pos, map, max)
+        let p1 = await Day6.simulate(pos, map, max, true)
 
         var p2 = 0
 
@@ -36,7 +36,7 @@ class Day6: Day {
                     group.addTask {
                         var newMap = map
                         newMap[testPos.y][testPos.x] = true
-                        return await Day6.simulate(pos, newMap, max)
+                        return await Day6.simulate(pos, newMap, max, false)
                     }
                 }
             }
@@ -53,7 +53,7 @@ class Day6: Day {
         print("Part 2 answer \(p2)")
     }
 
-    static func simulate(_ startingPoint: Point, _ map: [[Bool]], _ max: Point) async -> (Int, Int) {
+    static func simulate(_ startingPoint: Point, _ map: [[Bool]], _ max: Point, _ useSet: Bool) async -> (Int, Int) {
         var pos = startingPoint
         var direction = Direction.west
         var visited: Set<Point> = Set([pos])
@@ -67,7 +67,7 @@ class Day6: Day {
                 direction = direction.clockwise
             } else {
                 pos = nextPos
-                visited.insert(pos)
+                if useSet {visited.insert(pos)}
             }
             iterations += 1
         }
