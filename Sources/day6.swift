@@ -3,29 +3,46 @@ import Foundation
 class Day6: Day {
     let inputFile = "./Inputs/day6.txt"
     var input: Data? = nil
-    var maxX = 0
-    var maxY = 0
 
     func run() {
+        let semaphore = DispatchSemaphore(value: 0)
         let dat = getMap()
-        let map = dat.1
-        var pos = dat.0
-        maxY = map.count-1
-        maxX = map[0].count-1
 
-        let p1 = simulate(pos, map)
+        Task {
+            await Day6.main(dat: dat)
+            semaphore.signal()
+        }
+
+        semaphore.wait()
+    }
+
+    static func main(dat: (Point,[[Bool]])) async {
+        let map = dat.1
+        let pos = dat.0
+        let max = Point(map[0].count-1, map.count-1)
+
+        let p1 = await Day6.simulate(pos, map, max)
 
         var p2 = 0
-        for y in 0...maxY {
-            for x in 0...maxX {
-                let testPos = Point(x,y)
-                let obstical = map[testPos.y][testPos.x]
 
-                if testPos == pos || obstical {continue}
+        await withTaskGroup(of: (Int, Int).self) { group in
+            for y in 0...max.y {
+                for x in 0...max.x {
+                    let testPos = Point(x,y)
+                    let obstical = map[testPos.y][testPos.x]
 
-                var newMap = map
-                newMap[testPos.y][testPos.x] = true
-                if simulate(pos, newMap).1 >= 20_000 {
+                    if testPos == pos || obstical {continue}
+
+                    group.addTask {
+                        var newMap = map
+                        newMap[testPos.y][testPos.x] = true
+                        return await Day6.simulate(pos, newMap, max)
+                    }
+                }
+            }
+
+            for await res in group {
+                if res.1 >= 20_000 {
                     p2 += 1
                 }
             }
@@ -36,14 +53,14 @@ class Day6: Day {
         print("Part 2 answer \(p2)")
     }
 
-    func simulate(_ startingPoint: Point, _ map: [[Bool]]) -> (Int, Int) {
+    static func simulate(_ startingPoint: Point, _ map: [[Bool]], _ max: Point) async -> (Int, Int) {
         var pos = startingPoint
         var direction = Direction.west
         var visited: Set<Point> = Set([pos])
         var iterations = 0
-        while inMap(pos: pos) && iterations < 20_000 {
+        while inMap(pos: pos, max) && iterations < 20_000 {
             let nextPos = direction.offset + pos
-            if !inMap(pos: nextPos) {break}
+            if !inMap(pos: nextPos, max) {break}
             let obstical = map[nextPos.y][nextPos.x]
 
             if (obstical) {
@@ -57,8 +74,8 @@ class Day6: Day {
         return (visited.count, iterations)
     }
 
-    func inMap(pos: Point) -> Bool {
-        return pos.x >= 0 && pos.x <= maxX && pos.y >= 0 && pos.y <= maxY
+    static func inMap(pos: Point, _ max: Point) -> Bool {
+        return pos.x >= 0 && pos.x <= max.x && pos.y >= 0 && pos.y <= max.y
     }
 
     // True is obstical; false is open space
