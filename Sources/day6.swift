@@ -25,35 +25,32 @@ class Day6: Day {
 
         var p2 = 0
 
-        await withTaskGroup(of: (Int, Int).self) { group in
-            for y in 0...max.y {
-                for x in 0...max.x {
-                    let testPos = Point(x,y)
-                    let obstical = map[testPos.y][testPos.x]
+        await withTaskGroup(of: (Set<Point>, Int).self) { group in
+            for testPos in p1.0 {
+                let obstical = map[testPos.y][testPos.x]
 
-                    if testPos == pos || obstical {continue}
+                if testPos == pos || obstical {continue}
 
-                    group.addTask {
-                        var newMap = map
-                        newMap[testPos.y][testPos.x] = true
-                        return await Day6.simulate(pos, newMap, max, false)
-                    }
+                group.addTask {
+                    var newMap = map
+                    newMap[testPos.y][testPos.x] = true
+                    return await Day6.simulate(pos, newMap, max, false)
                 }
             }
 
             for await res in group {
-                if res.1 >= 20_000 {
+                if res.1 >= 8_000 {
                     p2 += 1
                 }
             }
         }
         
 
-        print("Part 1 answer \(p1.0); took \(p1.1) iterations")
+        print("Part 1 answer \(p1.0.count); took \(p1.1) iterations")
         print("Part 2 answer \(p2)")
     }
 
-    static func simulate(_ startingPoint: Point, _ map: [[Bool]], _ max: Point, _ useSet: Bool) async -> (Int, Int) {
+    static func simulate(_ startingPoint: Point, _ map: [[Bool]], _ max: Point, _ useSet: Bool) async -> (Set<Point>, Int) {
         var pos = startingPoint
         var direction = Direction.west
         var visited: Set<Point> = Set([pos])
@@ -71,7 +68,7 @@ class Day6: Day {
             }
             iterations += 1
         }
-        return (visited.count, iterations)
+        return (visited, iterations)
     }
 
     static func inMap(pos: Point, _ max: Point) -> Bool {
