@@ -25,7 +25,7 @@ class Day6: Day {
 
         var p2 = 0
 
-        await withTaskGroup(of: (Set<Point>, Int).self) { group in
+        await withTaskGroup(of: Bool.self) { group in
             for testPos in p1.0 {
                 let obstical = map[testPos.y][testPos.x]
 
@@ -34,12 +34,12 @@ class Day6: Day {
                 group.addTask {
                     var newMap = map
                     newMap[testPos.y][testPos.x] = true
-                    return await Day6.simulate(pos, newMap, max, false)
+                    return await Day6.simulateP2(pos, newMap, max)
                 }
             }
 
             for await res in group {
-                if res.1 >= 8_000 {
+                if res {
                     p2 += 1
                 }
             }
@@ -48,6 +48,31 @@ class Day6: Day {
 
         print("Part 1 answer \(p1.0.count); took \(p1.1) iterations")
         print("Part 2 answer \(p2)")
+    }
+
+    static func simulateP2(_ startingPoint: Point, _ map: [[Bool]], _ max: Point) async -> Bool {
+        var pos = startingPoint
+        var direction = Direction.west
+        var visited: [UInt8] = Array(repeating: 0, count: (max.y+1)*(max.x+1))
+        while inMap(pos: pos, max) {
+            let nextPos = direction.offset + pos
+            if !inMap(pos: nextPos, max) {break}
+            let obstical = map[nextPos.y][nextPos.x]
+
+            if (obstical) {
+                direction = direction.clockwise
+            } else {
+                pos = nextPos
+                let index = (max.y*pos.y)+pos.x
+                // Visited the same point in the same direction twice.
+                if (visited[index] & direction.bit) != 0 {
+                    return true
+                } else {
+                    visited[index] |= direction.bit
+                }
+            }
+        }
+        return false
     }
 
     static func simulate(_ startingPoint: Point, _ map: [[Bool]], _ max: Point, _ useSet: Bool) async -> (Set<Point>, Int) {
@@ -91,6 +116,11 @@ class Day6: Day {
     }
 }
 
+struct PosWithDirection: Hashable {
+    let pos: Point
+    let dir: Direction
+}
+
 extension Direction {
     var clockwise: Direction {
         switch (self) {
@@ -99,6 +129,16 @@ extension Direction {
             case .south: return .west
             case .west: return .north
             default: return .north
+        }
+    }
+
+    var bit: UInt8 {
+        switch (self) {
+            case .north: return 1 << 0
+            case .east: return 1 << 1
+            case .south: return 1 << 2
+            case .west: return 1 << 3
+            default: return 0
         }
     }
 }
