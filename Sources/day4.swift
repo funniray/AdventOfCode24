@@ -127,7 +127,7 @@ struct Point {
     }
 }
 
-extension Point {
+extension Point: Hashable {
     static func + (left: Point, right: Point) -> Point {
         return Point(left.x + right.x, left.y + right.y)
     }
@@ -147,6 +147,29 @@ enum Direction {
     case southwest
     case northeast
     case southeast
+}
+
+extension Direction {
+    var offset: Point {
+        switch self {
+            case .north:
+                return Point(1,0)
+            case .south:
+                return Point(-1,0)
+            case .east:
+                return Point(0,1)
+            case .west:
+                return Point(0,-1)
+            case .northwest:
+                return Point(1,-1)
+            case .northeast:
+                return Point(1,1)
+            case .southwest:
+                return Point(-1,-1)
+            case .southeast:
+                return Point(-1,1)
+        }
+    }
 }
 
 extension Direction: CaseIterable {}

@@ -51,7 +51,7 @@ class Day5: Day {
         for i in 1..<input.count {
             let rule = rules[input[i]] ?? []
             if !isValid(i, input, rule) {
-                if let swapIndex = input.indexOf(element: getNext(Array(input[i...]), rules, inverse)) {
+                if let swapIndex = input.firstIndex(of: getNext(Array(input[i...]), rules, inverse)) {
                     input.swapAt(i-1, swapIndex)
                 }
             }
@@ -117,16 +117,5 @@ extension Array {
     var middle: Element? {
         guard !isEmpty else { return nil }
         return self[count / 2]
-    }
-}
-
-extension Array where Iterator.Element == Int {
-    func indexOf(element: Element) -> Int? {
-        for (i,item) in self.enumerated() {
-            if item == element {
-                return i
-            }
-        }
-        return nil
     }
 }
