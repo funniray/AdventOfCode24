@@ -26,7 +26,7 @@ class Day7: Day {
     }
 
     func calculate(_ start: Int, _ input: [Int], _ index: Int, _ target: Int, useConcat: Bool) -> Bool {
-        if index == input.count {
+        if index == input.count || start > target {
             return start == target
         }
         let next: Int = input[index]
