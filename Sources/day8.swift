@@ -9,7 +9,7 @@ class Day8: Day {
         let min = Point(0,0)
 
         let antinodes = generateAntinodes(data.0, min, data.1)
-        print(generateMap(Array(antinodes.1)).map{String($0)}.joined(separator: "\n"))
+        // print(generateMap(Array(antinodes.1)).map{String($0)}.joined(separator: "\n"))
 
         print("Part 1 answer \(antinodes.0.count)")
         print("Part 2 answer \(antinodes.1.count)")
@@ -23,8 +23,8 @@ class Day8: Day {
                 antinodesP2.insert(node)
                 for (index2, node2) in nodes.value.enumerated() {
                     if index == index2 {continue}
-                    let slope = ((node - node2) * -1)
-                    var newNode = slope + node2
+                    let slope = node - node2
+                    var newNode = slope + node
                     if newNode >= min && newNode <= max {antinodesP1.insert(newNode)}
                     while newNode >= min && newNode <= max {
                         antinodesP2.insert(newNode)
@@ -53,13 +53,13 @@ class Day8: Day {
         return (out,max)
     }
 
-    func generateMap(_ points: [Point]) -> [[Character]] {
-        var data = self.input!.read2DCharArray()
-        for point in points {
-            data[point.y][point.x] = "#"
-        }
-        return data
-    }
+    // func generateMap(_ points: [Point]) -> [[Character]] {
+    //     var data = self.input!.read2DCharArray()
+    //     for point in points {
+    //         data[point.y][point.x] = "#"
+    //     }
+    //     return data
+    // }
 }
 
 typealias NodeList = [Character: [Point]]
