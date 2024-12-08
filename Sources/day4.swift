@@ -132,8 +132,28 @@ extension Point: Hashable {
         return Point(left.x + right.x, left.y + right.y)
     }
 
+    static func - (left: Point, right: Point) -> Point {
+        return Point(left.x - right.x, left.y - right.y)
+    }
+
     static func * (left: Point, right: Int) -> Point {
         return Point(left.x * right, left.y * right)
+    }
+
+    static func < (left: Point, right: Point) -> Bool {
+        return left.x < right.x && left.y < right.y
+    }
+
+    static func <= (left: Point, right: Point) -> Bool {
+        return left.x <= right.x && left.y <= right.y
+    }
+
+    static func > (left: Point, right: Point) -> Bool {
+        return left.x > right.x && left.y > right.y
+    }
+
+    static func >= (left: Point, right: Point) -> Bool {
+        return left.x >= right.x && left.y >= right.y
     }
 }
 
