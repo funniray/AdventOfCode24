@@ -11,13 +11,17 @@ class Day9: Day {
         var p2Data = data.0
         var nextIndex = 0
         for i in (0..<p1Data.count).reversed() {
-            nextIndex = getFreeIndex(nextIndex, p1Data)
+            nextIndex = getFreeIndex(nextIndex, p1Data, max: i)
             if nextIndex == -1 || nextIndex >= i {break}
             p1Data.swapAt(i,nextIndex)
         }
+        var nextIndexP2: [Int] = Array(repeating: 0, count: 9)
         for block in data.1.reversed() {
-            let i = getFreeIndexWithSize(p2Data, size: block.length)
-            if i >= block.startIndex || i == -1 {continue}
+            let next = nextIndexP2[block.length-1]
+            if  next == -1 || next >= block.startIndex {continue}
+            let i = getFreeIndexWithSize(nextIndexP2[block.length-1], p2Data, max: block.startIndex, size: block.length)
+            nextIndexP2[block.length-1] = i
+            if i == -1 {continue}
             for j in 0..<block.length {
                 p2Data.swapAt(i+j,block.startIndex+j)
             }
@@ -38,15 +42,15 @@ class Day9: Day {
         return res
     }
 
-    func getFreeIndex(_ startIndex: Int, _ data: [Int?]) -> Int {
-        for i in startIndex..<data.count {
+    func getFreeIndex(_ startIndex: Int, _ data: [Int?], max: Int) -> Int {
+        for i in startIndex..<max {
             if data[i] == nil {return i}
         }
         return -1
     }
 
-    func getFreeIndexWithSize(_ data: [Int?], size: Int) -> Int {
-        for i in 0..<data.count-size {
+    func getFreeIndexWithSize(_ startIndex: Int, _ data: [Int?], max: Int, size: Int) -> Int {
+        for i in startIndex..<max {
             if data[i] != nil {continue}
             var matches = true
             for j in i..<i+size {
