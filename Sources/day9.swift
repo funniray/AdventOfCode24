@@ -26,18 +26,16 @@ class Day9: Day {
                 p2Data.swapAt(i+j,block.startIndex+j)
             }
         }
-        let p1 = p1Data.compactMap{$0}
-        let p2 = p2Data.map{$0 == nil ? 0 : $0}.compactMap{$0}
 
         // print(p2Data.map{$0 == nil ? "." : String($0!)}.joined(separator: ""))
-        print("Part 1 answer \(genChecksum(p1))")
-        print("Part 2 answer \(genChecksum(p2))")
+        print("Part 1 answer \(genChecksum(p1Data))")
+        print("Part 2 answer \(genChecksum(p2Data))")
     }
 
-    func genChecksum(_ data: [Int]) -> Int {
+    func genChecksum(_ data: [Int?]) -> Int {
         var res = 0
         for (i,v) in data.enumerated() {
-            res += i*v
+            res += i*(v == nil ? 0 : v!)
         }
         return res
     }
@@ -68,12 +66,18 @@ class Day9: Day {
         let data = self.input!.read1DInt()
         var out: [Int?] = []
         var blocks: [Block] = []
+        out.reserveCapacity(10240)
+        blocks.reserveCapacity(data.count/2)
         for (i,num) in data.enumerated() {
             if i % 2 == 0 {
                 blocks.append(Block(int: i/2, length: num, startIndex: out.count))
-                out.append(contentsOf: Array(repeating: i/2, count: num))
+                for _ in 0..<num {
+                    out.append(i/2)
+                }
             } else {
-                out.append(contentsOf: Array(repeating: nil, count: num))
+                for _ in 0..<num {
+                    out.append(nil)
+                }
             }
         }
         return (out,blocks)
