@@ -16,14 +16,14 @@ class Day9: Day {
             p1Data.swapAt(i,nextIndex)
         }
         for block in data.1.reversed() {
-            var i = getFreeIndexWithSize(p2Data, size: block.length)
+            let i = getFreeIndexWithSize(p2Data, size: block.length)
             if i >= block.startIndex || i == -1 {continue}
             for j in 0..<block.length {
                 p2Data.swapAt(i+j,block.startIndex+j)
             }
         }
-        var p1 = p1Data.compactMap{$0}
-        var p2 = p2Data.map{$0 == nil ? 0 : $0}.compactMap{$0}
+        let p1 = p1Data.compactMap{$0}
+        let p2 = p2Data.map{$0 == nil ? 0 : $0}.compactMap{$0}
 
         // print(p2Data.map{$0 == nil ? "." : String($0!)}.joined(separator: ""))
         print("Part 1 answer \(genChecksum(p1))")
