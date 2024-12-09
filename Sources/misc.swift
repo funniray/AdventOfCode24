@@ -70,6 +70,14 @@ extension Data {
         }
         return res
     }
+
+    func read1DInt() -> [Int] {
+        var res: [Int] = []
+        for val in self {
+            res.append(Int(val-48))
+        }
+        return res
+    }
 }
 
 protocol Day {
