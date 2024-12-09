@@ -66,7 +66,7 @@ class Day9: Day {
         let data = self.input!.read1DInt()
         var out: [Int?] = []
         var blocks: [Block] = []
-        out.reserveCapacity(10240)
+        out.reserveCapacity(102400)
         blocks.reserveCapacity(data.count/2)
         for (i,num) in data.enumerated() {
             if i % 2 == 0 {
