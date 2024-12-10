@@ -19,27 +19,32 @@ class Day10: Day {
 
         var p1 = 0
         var p2 = 0
+
+        let pointTemplate = Array(repeating: UInt64(0), count: data.0.count)
+
         for point in data.1 {
-            var points: [Point] = []
-            traversePoint(point, 0, data.0, max: max, &points)
-            p1 += Set(points).count
-            p2 += points.count
+            var points: [UInt64] = pointTemplate
+            traversePoint(point, 0, data.0, max: max, &points, &p1, &p2)
         }
 
         print("Part 1 answer \(p1)")
         print("Part 2 answer \(p2)")
     }
 
-    func traversePoint(_ point: Point, _ current: Int, _ map: [[Int?]], max: Point, _ points: inout [Point]) {
+    func traversePoint(_ point: Point, _ current: Int, _ map: [[Int?]], max: Point, _ points: inout [UInt64], _ p1: inout Int, _ p2: inout Int) {
         for dir in Day10.cardinal {
             let newPoint = point + dir.offset
             if !(newPoint >= Day10.min && newPoint < max) {continue}
             let intAt = map[newPoint.y][newPoint.x]
             if intAt != nil && intAt!-1 == current {
                 if intAt != 9 {
-                    traversePoint(newPoint, intAt!, map, max: max, &points)
+                    traversePoint(newPoint, intAt!, map, max: max, &points, &p1, &p2)
                 } else {
-                    points.append(newPoint)
+                    p2 += 1
+                    if (points[newPoint.y] >> newPoint.x) & 1 == 0 {
+                        points[newPoint.y] |= (1 << newPoint.x)
+                        p1 += 1
+                    }
                 }
             }
         }
