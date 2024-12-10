@@ -52,6 +52,29 @@ extension Data {
         return res
     }
 
+    func readOptional2DArray() -> [[Int?]] {
+        var res: [[Int?]] = []
+        var line: [Int?] = []
+        for val in self {
+            let newline = val == 10 || val == 13 // \r or \n
+            let number = val >= 48 && val <= 57
+            let numberValue = number ? val-48 : nil
+            if newline {
+                if line.count == 0 {continue}
+                res.append(line)
+                line = []
+            } else if !number {
+                line.append(nil)
+            } else {
+                line.append(Int(numberValue!))
+            }
+        }
+        if line.count > 0 {
+            res.append(line)
+        }
+        return res
+    }
+
     func read2DCharArray() -> [[Character]] {
         var res: [[Character]] = []
         var line: [Character] = []
@@ -70,6 +93,8 @@ extension Data {
         }
         return res
     }
+
+    
 
     func read1DInt() -> [Int] {
         var res: [Int] = []
