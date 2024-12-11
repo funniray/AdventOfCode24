@@ -7,29 +7,41 @@ class Day11: Day {
     func run() {
         let data = readInput()
 
-        print(blink(data, 25))
-        print(blink(data, 75))
+        var p1 = data
+        for _ in 0..<25 {
+            p1 = blink(p1)
+        }
+        var p2 = p1
+        for i in 0..<50 {
+            print(i+25)
+            p2 = blink(p2)
+        }
+        print(p1.reduce(0,{$1.value + $0}))
+        print(p2.reduce(0,{$1.value + $0}))
     }
 
-    func blink(_ data: [Int], _ limit: Int) -> Int {
-        var res: Int = 0
+    func blink(_ data: [Int: Int]) -> [Int: Int] {
+        var res: [Int: Int] = [:]
         for num in data {
-            res += process(num, limit, 0)
+            let digits = countDigits(num.key)
+            if num.key == 0 {
+                appendOrInc(&res, 1, num.value)
+            } else if digits % 2 == 0 {
+                let split = splitDigits(num.key, digits)
+                appendOrInc(&res, split.0, num.value)
+                appendOrInc(&res, split.1, num.value)
+            } else {
+                appendOrInc(&res, num.key*2024, num.value)
+            }
         }
         return res
     }
 
-    func process(_ num: Int, _ limit: Int, _ i: Int) -> Int {
-        if i >= limit {return 1}
-        if num == 0 {
-            return process(1, limit, i+1)
-        } 
-        let digits = countDigits(num)
-        if digits % 2 == 0 {
-            let split = splitDigits(num, digits)
-            return process(split.0, limit, i+1) + process(split.1, limit, i+1)
+    func appendOrInc(_ data: inout [Int: Int], _ index: Int, _ count: Int)  {
+        if data[index] != nil {
+            data[index]! += count
         } else {
-            return process(num*2024, limit, i+1)
+            data[index] = count
         }
     }
 
@@ -60,8 +72,12 @@ class Day11: Day {
         return 1
     }
 
-    func readInput() -> [Int] {
-        return self.input!.read2DArray()[0]
+    func readInput() -> [Int: Int] {
+        var data: [Int: Int] = [:]
+        for num in self.input!.read2DArray()[0] {
+            appendOrInc(&data, num, 1)
+        }
+        return data
     }
 
 }
