@@ -13,7 +13,6 @@ class Day11: Day {
         }
         var p2 = p1
         for i in 0..<50 {
-            print(i+25)
             p2 = blink(p2)
         }
         print(p1.reduce(0,{$1.value + $0}))
