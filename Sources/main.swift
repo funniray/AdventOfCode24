@@ -55,6 +55,9 @@ func main() -> Bool {
         case 10:
             implementation = Day10()
             break
+        case 11:
+            implementation = Day11()
+            break
         default: 
             print("Unknown day \(day!)")
             implementation = nil
